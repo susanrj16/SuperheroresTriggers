@@ -1,0 +1,181 @@
+﻿<Window x:Class="Superheroes.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Superheroes"
+        mc:Ignorable="d"
+        Title="Superhéroes" Height="600" Width="800" Icon="shield.ico" MinHeight="600" MinWidth="800">
+    
+    <Window.Resources>
+        <local:Superheroe x:Key="nuevo"></local:Superheroe>
+
+        
+		
+        <Style TargetType="Image" x:Key="flechas">
+            <Setter Property="Width" Value="20"/>
+        </Style>
+		
+        <Style TargetType="TextBlock" x:Key="paginas">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style> 
+
+        <Style TargetType="Border" x:Key="opciones">
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="1"/>
+      
+        </Style>
+        <Style TargetType="Button" x:Key="botones">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Margin" Value="5"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="DockPanel" x:Key="fondo">
+            <Setter Property="Background" Value="IndianRed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Heroe}" Value="True">
+                    <Setter Property="Background" Value="PaleGreen"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Image" x:Key="visibilidadXmen">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Xmen}" Value="True">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Image" x:Key="visibilidadVengador">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Vengador}" Value="True">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="nombre">
+            <Setter Property="FontSize" Value="40"/>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="FontSize" To="55" Duration="0:0:2"></DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="FontSize" To="40" Duration="0:0:2"></DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBox" x:Key="fondoTextBox">
+            <Style.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter Property="Background" Value="IndianRed"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+
+
+
+    <TabControl>
+        <TabItem Header="Ver superhéroes">
+            <DockPanel x:Name="heroesDock" Style="{StaticResource fondo}"  Margin="10">
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                    <TextBlock Style="{StaticResource nombre}" x:Name="nombreTextBlock" DockPanel.Dock="Left" Foreground="White" FontSize="40" Text="{Binding Path=Nombre}">
+                        <TextBlock.Effect>
+                            <DropShadowEffect/>
+                        </TextBlock.Effect></TextBlock>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <Image Source="avengers.png" Width="20" Style="{StaticResource visibilidadVengador}"></Image>
+                        <Image Source="xmen.png" Width="30" Style="{StaticResource visibilidadXmen}"></Image>
+                    </StackPanel>
+                </DockPanel>
+
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="arrow.png" Style="{StaticResource flechas}" MouseUp="Atras_MouseUp"></Image>
+                    <TextBlock x:Name="pagActualTextBlock" Style="{StaticResource paginas}"></TextBlock>
+                    <TextBlock Style="{StaticResource paginas}">/</TextBlock>
+                    <TextBlock x:Name="pagTotalTextBlock" Style="{StaticResource paginas}"></TextBlock>
+                    <Image Source="arrow.png" Style="{StaticResource flechas}" RenderTransformOrigin="0.5,0.5" MouseUp="Avanzar_MouseUp">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="180"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
+                </StackPanel>
+                <Image Source="{Binding Path=Imagen}" Stretch="UniformToFill" Margin="10"></Image>
+            </DockPanel>
+        </TabItem>
+        
+        <TabItem Header="Nuevo superhéroe">
+            <Grid Margin="10" x:Name="nuevoHeroeGrid" DataContext="{DynamicResource nuevo}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="1" Margin="10" CornerRadius="4" Background="Beige" BorderBrush="Black" BorderThickness="1">
+                    <Image Source="{Binding ElementName=imagenTextBox, Path=Text}"></Image>
+                </Border>
+                <StackPanel Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock>Nombre del superhéroe</TextBlock>
+                        <Image Source="info.png" Width="15" ToolTip="Nombre del superhéroe en inglés"></Image>
+                    </StackPanel>
+                    <TextBox Text="{Binding Path=Nombre}" Style="{StaticResource fondoTextBox}"></TextBox>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock>Imagen</TextBlock>
+                        <Image Source="info.png" Width="15" ToolTip="Imagen del superhéroe en formato comic"></Image>
+                    </StackPanel>
+                    <TextBox x:Name="imagenTextBox" Text="{Binding Path=Imagen}" Style="{StaticResource fondoTextBox}"></TextBox>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource opciones}">
+                            <StackPanel>
+                                <RadioButton x:Name="heroeButton" IsChecked="{Binding Path=Heroe}">Héroe</RadioButton>
+                                <RadioButton IsChecked="{Binding Path=Villano}">Villano</RadioButton>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Style="{StaticResource opciones}">
+                            <StackPanel IsEnabled="{Binding ElementName=heroeButton,Path=IsChecked}">
+                                <CheckBox IsChecked="{Binding Path=Vengador}">Verngadores</CheckBox>
+                                <CheckBox IsChecked="{Binding Path=Xmen}">X-men</CheckBox>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                        <Button Style="{StaticResource botones}" Click="aceptarBoton_Click">Aceptar</Button>
+                        <Button Style="{StaticResource botones}" Click="limpiarBoton_Click">Limpiar</Button>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+    </TabControl>
+
+</Window>
